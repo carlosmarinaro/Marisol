@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Toolkit Laboral — Propuesta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#3B3550;        /* deep plum ink for text */
+    --ink-soft:#6E667F;   /* muted text */
+    --ink-card:#4E4763;   /* text on soft colored cards */
+    --paper:#FCFBFE;      /* content background */
+    --tint:#F1ECFA;       /* soft lavender tint */
+    --line:#E7E1F2;
+
+    --blue-soft:#C4D6F4; --blue-deep:#3F5E97;
+    --coral-soft:#F8C8B7; --coral-deep:#B5512F;
+    --mint-soft:#BBE3CD; --mint-deep:#357A5C;
+    --lav-soft:#D9CAF4; --lav-mid:#9D80D6; --lav-deep:#6B4FB0;
+    --coral-mid:#E89A80;
+
+    --maxw:1140px;
+    --grad-hero:linear-gradient(135deg,#E7DBF8 0%,#D2DEF5 48%,#DCEBF7 100%);
+    --grad-close:linear-gradient(135deg,#DCEBF7 0%,#E2D4F5 50%,#F8DBCB 100%);
+    --display:'Space Grotesk',system-ui,sans-serif;
+    --body:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--body);color:var(--ink);background:#ece8f6;overflow:hidden;-webkit-font-smoothing:antialiased}
+
+  .ic{width:1em;height:1em;display:inline-block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+  /* ---------- Deck ---------- */
+  #vp{position:fixed;inset:0;overflow:hidden}
+  .deck{display:flex;height:100%;transition:transform .55s cubic-bezier(.7,0,.2,1);will-change:transform}
+  .slide{flex:0 0 100%;min-width:100%;height:100%;position:relative;overflow-x:hidden;overflow-y:auto;display:flex;-webkit-overflow-scrolling:touch}
+  .inner{position:relative;z-index:1;margin:auto;width:min(var(--maxw),90vw);padding:clamp(3.6rem,7vh,5.5rem) 0 clamp(4.6rem,9vh,5.8rem)}
+
+  .s-hero{background:var(--grad-hero);background-size:180% 180%;animation:drift 24s ease-in-out infinite}
+  .s-close{background:var(--grad-close);background-size:180% 180%;animation:drift 24s ease-in-out infinite}
+  .s-prob{background:#FAEEEA}
+  .s-light{background:var(--paper)}
+  .s-hero::after,.s-close::after{content:"";position:absolute;width:44vmax;height:44vmax;border-radius:50%;background:rgba(255,255,255,.42);right:-12vmax;top:-15vmax;z-index:0;pointer-events:none}
+  .s-prob::after{content:"";position:absolute;width:46vmax;height:46vmax;border-radius:50%;right:-14vmax;bottom:-18vmax;background:radial-gradient(circle,rgba(229,138,111,.30),transparent 70%);z-index:0;pointer-events:none}
+  @keyframes drift{0%,100%{background-position:0% 0%}50%{background-position:100% 100%}}
+
+  /* ---------- Typography ---------- */
+  .kicker{font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.24em;font-size:clamp(.7rem,1.5vw,.82rem);margin-bottom:clamp(.9rem,2.5vh,1.4rem)}
+  .k-lav{color:var(--lav-deep)} .k-blue{color:var(--blue-deep)} .k-coral{color:var(--coral-deep)} .k-mint{color:var(--mint-deep)}
+  h1{font-family:var(--display);font-weight:700;letter-spacing:-.02em;line-height:1.02;font-size:clamp(2.3rem,7.4vw,4.5rem);color:var(--ink)}
+  h2{font-family:var(--display);font-weight:700;letter-spacing:-.015em;line-height:1.06;font-size:clamp(1.65rem,5vw,2.75rem);color:var(--ink)}
+  .lead{font-size:clamp(1rem,2.5vw,1.18rem);line-height:1.5;max-width:46ch;margin-top:clamp(.9rem,2.5vh,1.3rem);color:var(--ink-soft)}
+  .meta{font-size:.84rem;font-style:italic;color:var(--ink-soft);opacity:.85;margin-top:clamp(1.4rem,4vh,2rem)}
+  .acc-lav{color:var(--lav-deep)} .acc-coral{color:var(--coral-deep)} .acc-mint{color:var(--mint-deep)}
+
+  /* ---------- Hero hint ---------- */
+  .hint{display:inline-flex;align-items:center;gap:.5rem;margin-top:clamp(1.6rem,4vh,2.2rem);font-size:.82rem;letter-spacing:.04em;color:var(--ink-soft)}
+  .hint .ic{width:1.1em;height:1.1em;animation:nudge 1.6s ease-in-out infinite}
+  @keyframes nudge{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
+
+  /* ---------- Problem ---------- */
+  .prob{display:grid;grid-template-columns:1fr 340px;gap:clamp(1.4rem,4vw,2.8rem);align-items:center;margin-top:clamp(1.2rem,3vh,1.8rem)}
+  .bubble{background:#fff;border:1px solid var(--line);border-radius:18px;padding:clamp(1rem,2.5vw,1.35rem) clamp(1.1rem,3vw,1.5rem);box-shadow:0 16px 32px -20px rgba(123,107,160,.4)}
+  .bubble+.bubble{margin-top:1rem}
+  .bubble .num{font-family:var(--display);font-weight:700;line-height:1;font-size:clamp(2.1rem,6.5vw,3.1rem)}
+  .bubble .num.c1{color:var(--coral-deep)} .bubble .num.c2{color:var(--blue-deep)}
+  .bubble p{color:var(--ink-soft);font-size:clamp(.84rem,2vw,.94rem);margin-top:.5rem;line-height:1.35}
+  .src{color:var(--ink-soft);font-size:.78rem;font-style:italic;margin-top:1.1rem;opacity:.85}
+
+  /* ---------- Pillars (solution) ---------- */
+  .pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(.8rem,2vw,1.4rem);margin-top:clamp(1.4rem,4vh,2.2rem)}
+  .pcard{border-radius:22px;padding:clamp(1.3rem,3vw,1.9rem) clamp(1rem,2.5vw,1.5rem);text-align:center;display:flex;flex-direction:column;align-items:center;gap:.55rem;box-shadow:0 16px 36px -20px rgba(123,107,160,.45);transition:transform .35s ease,box-shadow .35s ease}
+  .pcard:hover{transform:translateY(-6px);box-shadow:0 26px 48px -20px rgba(123,107,160,.5)}
+  .pc-blue{background:var(--blue-soft)} .pc-coral{background:var(--coral-soft)} .pc-mint{background:var(--mint-soft)}
+  .pcard h3,.pcard p{color:var(--ink)} .pcard p{color:var(--ink-card)}
+  .ico-disc{width:clamp(54px,8vw,66px);height:clamp(54px,8vw,66px);border-radius:50%;background:#fff;display:grid;place-items:center}
+  .ico-disc .ic{width:46%;height:46%}
+  .pc-blue .ico-disc .ic{color:var(--blue-deep)} .pc-coral .ico-disc .ic{color:var(--coral-deep)} .pc-mint .ico-disc .ic{color:var(--mint-deep)}
+  .pcard h3{font-family:var(--display);font-weight:700;font-size:clamp(1.3rem,3vw,1.55rem)}
+  .pcard p{font-size:clamp(.88rem,2vw,1rem)}
+  .pill{display:inline-flex;align-items:center;gap:.5rem;border-radius:999px;padding:.6rem 1.2rem;font-family:var(--display);font-weight:600;font-size:clamp(.82rem,2vw,.95rem)}
+  .pill.tint{background:var(--tint);color:var(--lav-deep);margin:clamp(1.3rem,3.5vh,1.9rem) auto 0;display:flex;width:max-content}
+  .pill.tint .ic{width:1.05em;height:1.05em}
+
+  /* ---------- Pillar detail ---------- */
+  .pgrid{display:grid;grid-template-columns:320px 1fr;gap:clamp(1.5rem,4vw,3rem);align-items:center;margin-top:clamp(1.2rem,3vh,1.8rem)}
+  .block{border-radius:26px;padding:clamp(1.6rem,4vw,2.3rem) clamp(1.2rem,3vw,1.6rem);text-align:center;display:flex;flex-direction:column;align-items:center;gap:.7rem;box-shadow:0 18px 40px -22px rgba(123,107,160,.45)}
+  .b-blue{background:var(--blue-soft)} .b-coral{background:var(--coral-soft)} .b-mint{background:var(--mint-soft)}
+  .block .ic{width:clamp(56px,9vw,82px);height:clamp(56px,9vw,82px);stroke-width:1.6}
+  .b-blue .ic{color:var(--blue-deep)} .b-coral .ic{color:var(--coral-deep)} .b-mint .ic{color:var(--mint-deep)}
+  .block h3{font-family:var(--display);font-weight:700;font-size:clamp(1.55rem,4vw,2rem);color:var(--ink)}
+  .block p{font-size:clamp(.92rem,2.2vw,1.02rem);color:var(--ink-card);line-height:1.4}
+  .checklist{display:flex;flex-direction:column;gap:clamp(.85rem,2.4vh,1.25rem)}
+  .citem{display:flex;gap:.95rem;align-items:flex-start}
+  .citem .dot{flex:none;width:clamp(30px,5vw,36px);height:clamp(30px,5vw,36px);border-radius:50%;display:grid;place-items:center;margin-top:.1rem}
+  .citem .dot .ic{width:52%;height:52%}
+  .d-blue{background:var(--blue-soft);color:var(--blue-deep)} .d-coral{background:var(--coral-soft);color:var(--coral-deep)} .d-mint{background:var(--mint-soft);color:var(--mint-deep)}
+  .citem h4{font-size:clamp(1rem,2.5vw,1.18rem);font-weight:700;color:var(--ink)}
+  .citem p{color:var(--ink-soft);font-size:clamp(.85rem,2vw,.96rem);line-height:1.35;margin-top:.12rem}
+
+  /* ---------- Results ---------- */
+  .results{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(.8rem,2vw,1.2rem);margin-top:clamp(1.6rem,4vh,2.4rem)}
+  .rcard{background:#fff;border-radius:18px;padding:clamp(1.2rem,2.8vw,1.5rem);box-shadow:0 18px 40px -22px rgba(123,107,160,.4)}
+  .rcard .rhead{display:flex;align-items:center;gap:.8rem}
+  .rcard .disc{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center}
+  .rcard .disc .ic{width:50%;height:50%}
+  .rcard h4{font-family:var(--display);font-weight:700;font-size:clamp(1rem,2.4vw,1.18rem);color:var(--ink)}
+  .rcard p{color:var(--ink-soft);font-size:clamp(.85rem,2vw,.95rem);line-height:1.4;margin-top:.8rem}
+
+  /* ---------- Benefits ---------- */
+  .benefits{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(.8rem,2vw,1.1rem);margin-top:clamp(1.4rem,4vh,2.1rem)}
+  .bcard{background:var(--tint);border-radius:16px;padding:clamp(1.1rem,2.6vw,1.4rem);display:flex;gap:1rem;align-items:flex-start}
+  .bcard .disc{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center}
+  .bcard .disc .ic{width:50%;height:50%}
+  .h-blue{background:var(--blue-soft);color:var(--blue-deep)} .h-coral{background:var(--coral-soft);color:var(--coral-deep)} .h-mint{background:var(--mint-soft);color:var(--mint-deep)} .h-lav{background:var(--lav-soft);color:var(--lav-deep)}
+  .bcard h4{font-family:var(--display);font-weight:700;font-size:clamp(1rem,2.4vw,1.18rem);color:var(--ink)}
+  .bcard p{color:var(--ink-soft);font-size:clamp(.84rem,2vw,.94rem);line-height:1.35;margin-top:.25rem}
+
+  /* ---------- CTA ---------- */
+  .cta{display:inline-flex;align-items:center;gap:.6rem;background:var(--lav-soft);color:var(--ink);border:0;border-radius:999px;padding:.85rem 1.7rem;font-family:var(--display);font-weight:700;font-size:clamp(.92rem,2.2vw,1.05rem);letter-spacing:.02em;cursor:pointer;margin-top:clamp(1.3rem,3.5vh,1.9rem);transition:transform .25s ease,box-shadow .25s ease,background .25s ease;text-decoration:none}
+  .cta:hover{transform:translateY(-3px);background:var(--lav-mid);box-shadow:0 16px 32px -16px rgba(157,128,214,.7)}
+
+  /* ---------- Reveal ---------- */
+  .inner>*{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+  .slide.is-active .inner>*{opacity:1;transform:none}
+  .slide.is-active .inner>*:nth-child(1){transition-delay:.06s}
+  .slide.is-active .inner>*:nth-child(2){transition-delay:.14s}
+  .slide.is-active .inner>*:nth-child(3){transition-delay:.22s}
+  .slide.is-active .inner>*:nth-child(4){transition-delay:.30s}
+  .slide.is-active .inner>*:nth-child(5){transition-delay:.38s}
+  .slide.is-active .inner>*:nth-child(6){transition-delay:.46s}
+
+  /* ---------- Controls ---------- */
+  #bar{position:fixed;top:0;left:0;height:4px;width:11%;background:linear-gradient(90deg,var(--lav-mid),var(--coral-mid));z-index:30;transition:width .45s ease}
+  #counter{position:fixed;top:.85rem;right:1rem;z-index:30;font-family:var(--display);font-weight:600;font-size:.8rem;letter-spacing:.06em;padding:.3rem .7rem;border-radius:999px;color:var(--ink);background:rgba(59,53,80,.07)}
+  #dots{position:fixed;left:50%;transform:translateX(-50%);bottom:1.15rem;z-index:30;display:flex;gap:.5rem;align-items:center}
+  .dot{width:8px;height:8px;border-radius:50%;border:0;padding:0;cursor:pointer;transition:all .3s ease;background:rgba(59,53,80,.22)}
+  .dot.on{width:22px;border-radius:5px;background:var(--lav-mid)}
+  .navbtn{position:fixed;bottom:.95rem;z-index:30;width:44px;height:44px;border-radius:50%;background:transparent;display:grid;place-items:center;cursor:pointer;color:var(--ink);border:1px solid rgba(59,53,80,.22);transition:background .25s ease,opacity .25s ease}
+  .navbtn .ic{width:22px;height:22px}
+  .navbtn:hover:not(:disabled){background:rgba(59,53,80,.06)}
+  #prev{right:4.4rem} #next{right:.9rem}
+  #prev .ic{transform:scaleX(-1)}
+  .navbtn:disabled{opacity:.3;cursor:default}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:780px){
+    .prob{grid-template-columns:1fr}
+    .pgrid{grid-template-columns:1fr;gap:clamp(1.1rem,4vh,1.6rem)}
+    .block{flex-direction:row;text-align:left;align-items:center;gap:1.1rem;padding:1.1rem 1.3rem;border-radius:20px}
+    .block .ic{width:46px;height:46px}
+    .block h3{font-size:1.5rem}
+    .block .b-tag{display:flex;flex-direction:column}
+    .pillars{grid-template-columns:1fr;gap:.8rem}
+    .pcard{flex-direction:row;text-align:left;justify-content:flex-start;gap:1rem;padding:1.1rem 1.2rem}
+    .ico-disc{width:50px;height:50px}
+    .results{grid-template-columns:1fr}
+    .benefits{grid-template-columns:1fr}
+  }
+  @media (max-width:780px) and (orientation:portrait){
+    .inner{padding-top:clamp(3.2rem,6vh,4rem)}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important}
+    .deck{transition:none}
+    .inner>*{opacity:1!important;transform:none!important;transition:none!important}
+    #bar{transition:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V11"/><path d="M10 20V4"/><path d="M16 20v-6"/><path d="M3 20.5h18"/></symbol>
+  <symbol id="i-mega" viewBox="0 0 24 24"><path d="M4 10v4h3l9 5V5L7 10H4z"/><path d="M18.5 9a3.5 3.5 0 0 1 0 6"/></symbol>
+  <symbol id="i-coins" viewBox="0 0 24 24"><circle cx="9" cy="9" r="5"/><path d="M14.4 7.5a5 5 0 1 1-4.2 8.9"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6.5 9.5 17 4 11.5"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h3.6l2 2H19a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></symbol>
+  <symbol id="i-award" viewBox="0 0 24 24"><circle cx="12" cy="9" r="6"/><path d="M9 14.2 7.8 21 12 18.8 16.2 21 15 14.2"/></symbol>
+  <symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.27 5.82.85-4.21 4.1.99 5.79L12 16.77l-5.2 2.73.99-5.79-4.21-4.1 5.82-.85L12 3.5z"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 5a2 2 0 0 1 2-2h6l9.5 9.5a1.5 1.5 0 0 1 0 2.12l-6.88 6.88a1.5 1.5 0 0 1-2.12 0L3 12V5z"/><circle cx="7.5" cy="7.5" r="1.3"/></symbol>
+  <symbol id="i-rocket" viewBox="0 0 24 24"><path d="M5 15c-2 1-2 5-2 5s4 0 5-2"/><path d="M12.5 15.5 9 12c1-5 4-8 9.5-9 0 5.5-4 8.5-9 9z"/><path d="M9 12H5s1-3 3.2-4.2"/><path d="M12 15v4s3-1 4.2-3"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5z"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+</defs></svg>
+
+<div id="bar"></div>
+<div id="counter">1 / 9</div>
+
+<div id="vp">
+  <div class="deck" id="deck">
+
+    <!-- 1 HERO -->
+    <section class="slide s-hero" data-theme="light">
+      <div class="inner">
+        <p class="kicker k-lav">Toolkit Laboral</p>
+        <h1>Del aula al trabajo,<br><span class="acc-lav">sin escalas.</span></h1>
+        <p class="lead">Las habilidades digitales, comerciales y financieras que el mercado paga — antes de cumplir los 19.</p>
+        <p class="meta">Programa de salida laboral · Propuesta 2026</p>
+        <span class="hint">Deslizá o usá las flechas <svg class="ic"><use href="#i-chev"/></svg></span>
+      </div>
+    </section>
+
+    <!-- 2 PROBLEMA -->
+    <section class="slide s-prob" data-theme="light">
+      <div class="inner">
+        <p class="kicker k-coral">La realidad</p>
+        <h2>Hoy el título <span class="acc-coral">no alcanza.</span></h2>
+        <div class="prob">
+          <div>
+            <p class="lead">Entre el último día de clases y el primer empleo hay un vacío que el secundario no cubre. Falta lo que el mercado realmente pide.</p>
+            <p class="src">INDEC · 4.º trim. 2025</p>
+          </div>
+          <div>
+            <div class="bubble"><div class="num c1">17%</div><p>desempleo joven — el doble del promedio general (7,5%).</p></div>
+            <div class="bubble"><div class="num c2">7 de 10</div><p>jóvenes que sí trabajan están en la informalidad.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 SOLUCION -->
+    <section class="slide s-light" data-theme="light">
+      <div class="inner">
+        <p class="kicker k-lav">La propuesta</p>
+        <h2>3 superpoderes que el secundario no enseña</h2>
+        <p class="lead">Lo que toda empresa busca y todo emprendedor necesita.</p>
+        <div class="pillars">
+          <div class="pcard pc-blue"><div class="ico-disc"><svg class="ic"><use href="#i-chart"/></svg></div><h3>Datos</h3><p>Tomar mejores decisiones.</p></div>
+          <div class="pcard pc-coral"><div class="ico-disc"><svg class="ic"><use href="#i-mega"/></svg></div><h3>Comercial</h3><p>Generar ingresos.</p></div>
+          <div class="pcard pc-mint"><div class="ico-disc"><svg class="ic"><use href="#i-coins"/></svg></div><h3>Finanzas</h3><p>Dominar el dinero.</p></div>
+        </div>
+        <span class="pill tint"><svg class="ic"><use href="#i-bolt"/></svg> IA aplicada en todo el programa</span>
+      </div>
+    </section>
+
+    <!-- 4 DATOS -->
+    <section class="slide s-light" data-theme="light">
+      <div class="inner">
+        <p class="kicker k-blue">Pilar · Datos</p>
+        <h2>El idioma que toda empresa busca</h2>
+        <div class="pgrid">
+          <div class="block b-blue"><svg class="ic"><use href="#i-chart"/></svg><div class="b-tag"><h3>Datos</h3><p>Convertí datos en decisiones que importan.</p></div></div>
+          <div class="checklist">
+            <div class="citem"><span class="dot d-blue"><svg class="ic"><use href="#i-check"/></svg></span><div><h4>Excel avanzado</h4><p>Tablas, fórmulas y macros. El piso de toda oficina.</p></div></div>
+            <div class="citem"><span class="dot d-blue"><svg class="ic"><use href="#i-check"/></svg></span><div><h4>Power BI</h4><p>Tableros y KPIs altamente demandados en el mercado.</p></div></div>
+            <div class="citem"><span class="dot d-blue"><svg class="ic"><use href="#i-check"/></svg></span><div><h4>Análisis de datos</h4><p>Leé e interpretá datos como un profesional.</p></div></div>
+            <div class="citem"><span class="dot d-blue"><svg class="ic"><use href="#i-check"/></svg></span><div><h4>IA + agentes</h4><p>Producí 10x con inteligencia artificial.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 COMERCIAL -->
+    <section class="slide s-light" data-theme="light">
+      <div class="inner">
+        <p class="kicker k-coral">Pilar · Comercial</p>
+        <h2>Aprendé a vender (y a venderte)</h2>
+        <div class="pgrid">
+          <div class="block b-coral"><svg class="ic"><use href="#i-mega"/></svg><div class="b-tag"><h3>Comercial</h3><p>Generá ingresos desde el primer mes.</p></div></div>
+          <div class="checklist">
+            <div class="citem"><span class="dot d-coral"><svg class="ic"><use href="#i-check"/></svg></span><div><h4>Meta Ads</h4><p>Campañas en redes. Salida freelance inmediata.</p></div></div>
+            <div class="citem"><span class="dot d-coral"><svg class="ic"><use href="#i-check"/></svg></span><div><h4>Técnicas de venta</h4><p>Del primer contacto al cierre. B2B y B2C.</p></div></div>
+            <div class="citem"><span class="dot d-coral"><svg class="ic"><use href="#i-check"/></svg></span><div><h4>CRM y pipeline</h4><p>Organizá clientes y no perdás ninguna venta.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 FINANZAS -->
+    <section class="slide s-light" data-theme="light">
+      <div class="inner">
+        <p class="kicker k-mint">Pilar · Finanzas</p>
+        <h2>Dominá el dinero, no al revés</h2>
+        <div class="pgrid">
+          <div class="block b-mint"><svg class="ic"><use href="#i-coins"/></svg><div class="b-tag"><h3>Finanzas</h3><p>Que el dinero trabaje para ellos.</p></div></div>
+          <div class="checklist">
+            <div class="citem"><span class="dot d-mint"><svg class="ic"><use href="#i-check"/></svg></span><div><h4>Finanzas personales</h4><p>Presupuesto, ahorro y deuda sana.</p></div></div>
+            <div class="citem"><span class="dot d-mint"><svg class="ic"><use href="#i-check"/></svg></span><div><h4>Costos y precios</h4><p>Cuánto cuesta y a cuánto vender.</p></div></div>
+            <div class="citem"><span class="dot d-mint"><svg class="ic"><use href="#i-check"/></svg></span><div><h4>Flujo de caja e inflación</h4><p>Clave para vivir y emprender en Argentina.</p></div></div>
+            <div class="citem"><span class="dot d-mint"><svg class="ic"><use href="#i-check"/></svg></span><div><h4>Inversión: VAN y TIR</h4><p>Evaluá proyectos (módulo opcional).</p></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 TRANSFORMACION -->
+    <section class="slide s-hero" data-theme="light">
+      <div class="inner">
+        <p class="kicker k-mint">El resultado</p>
+        <h2>Entran con un título.<br><span class="acc-mint">Salen con experiencia real.</span></h2>
+        <div class="results">
+          <div class="rcard"><div class="rhead"><span class="disc h-blue"><svg class="ic"><use href="#i-folder"/></svg></span><h4>Portfolio real</h4></div><p>Un tablero, una campaña y un modelo, hechos por ellos.</p></div>
+          <div class="rcard"><div class="rhead"><span class="disc h-coral"><svg class="ic"><use href="#i-award"/></svg></span><h4>Certificaciones</h4></div><p>Rutas a Microsoft y Meta Blueprint.</p></div>
+          <div class="rcard"><div class="rhead"><span class="disc h-mint"><svg class="ic"><use href="#i-briefcase"/></svg></span><h4>Listos de verdad</h4></div><p>Para emplearse o lanzar su propio proyecto.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 COLEGIO -->
+    <section class="slide s-light" data-theme="light">
+      <div class="inner">
+        <p class="kicker k-lav">Para tu colegio</p>
+        <h2>El programa que hace crecer tu colegio</h2>
+        <div class="benefits">
+          <div class="bcard"><span class="disc h-coral"><svg class="ic"><use href="#i-star"/></svg></span><div><h4>Más matrícula</h4><p>«Salida laboral» es el argumento N.º 1 de las familias hoy.</p></div></div>
+          <div class="bcard"><span class="disc h-blue"><svg class="ic"><use href="#i-tag"/></svg></span><div><h4>Costo casi cero</h4><p>Una notebook y software gratis. Sin obras ni laboratorios.</p></div></div>
+          <div class="bcard"><span class="disc h-mint"><svg class="ic"><use href="#i-coins"/></svg></span><div><h4>Ingreso nuevo</h4><p>Arancel post-secundario o extracurricular.</p></div></div>
+          <div class="bcard"><span class="disc h-lav"><svg class="ic"><use href="#i-rocket"/></svg></span><div><h4>Marca moderna</h4><p>El colegio que enseña IA, datos y negocios.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 CIERRE -->
+    <section class="slide s-close" data-theme="light">
+      <div class="inner">
+        <p class="kicker k-lav">Demos el primer paso</p>
+        <h2>El secundario les da el título.<br><span class="acc-lav">Vos les das el futuro.</span></h2>
+        <p class="lead">Arranquemos con un módulo piloto este cuatrimestre y midamos el interés de las familias.</p>
+        <a class="cta" href="#" onclick="return false">¿Arrancamos? <svg class="ic"><use href="#i-chev"/></svg></a>
+        <p class="meta">Toolkit Laboral · Propuesta 2026</p>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<div id="dots" aria-label="Navegación de diapositivas"></div>
+<button class="navbtn" id="prev" aria-label="Diapositiva anterior"><svg class="ic"><use href="#i-chev"/></svg></button>
+<button class="navbtn" id="next" aria-label="Diapositiva siguiente"><svg class="ic"><use href="#i-chev"/></svg></button>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const deck=document.getElementById('deck');
+  const dotsWrap=document.getElementById('dots');
+  const counter=document.getElementById('counter');
+  const bar=document.getElementById('bar');
+  const prev=document.getElementById('prev');
+  const next=document.getElementById('next');
+  let i=0;
+
+  slides.forEach((s,idx)=>{
+    const b=document.createElement('button');
+    b.className='dot';
+    b.setAttribute('aria-label','Ir a la diapositiva '+(idx+1));
+    b.addEventListener('click',()=>go(idx));
+    dotsWrap.appendChild(b);
+  });
+  const dots=[...dotsWrap.children];
+
+  function render(){
+    slides.forEach((s,k)=>s.classList.toggle('is-active',k===i));
+    dots.forEach((d,k)=>d.classList.toggle('on',k===i));
+    counter.textContent=(i+1)+' / '+slides.length;
+    bar.style.width=((i+1)/slides.length*100)+'%';
+    prev.disabled=(i===0);
+    next.disabled=(i===slides.length-1);
+  }
+  function go(idx){
+    i=Math.max(0,Math.min(slides.length-1,idx));
+    deck.style.transform='translateX(-'+(i*100)+'%)';
+    render();
+  }
+
+  prev.addEventListener('click',()=>go(i-1));
+  next.addEventListener('click',()=>go(i+1));
+
+  addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(i+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(i-1);}
+    else if(e.key==='Home'){e.preventDefault();go(0);}
+    else if(e.key==='End'){e.preventDefault();go(slides.length-1);}
+  });
+
+  let sx=0,sy=0,track=false;
+  const vp=document.getElementById('vp');
+  vp.addEventListener('touchstart',e=>{const t=e.changedTouches[0];sx=t.clientX;sy=t.clientY;track=true;},{passive:true});
+  vp.addEventListener('touchend',e=>{
+    if(!track)return;track=false;
+    const t=e.changedTouches[0];
+    const dx=t.clientX-sx, dy=t.clientY-sy;
+    if(Math.abs(dx)>45 && Math.abs(dx)>Math.abs(dy)*1.3){ go(i+(dx<0?1:-1)); }
+  },{passive:true});
+
+  render();
+</script>
+</body>
+</html>
